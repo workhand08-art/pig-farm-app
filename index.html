@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ระบบบันทึกข้อมูลฟาร์มสุกรขุน</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input, select, textarea { width: 100%; max-width: 300px; padding: 8px; margin-top: 5px; }
+        button { margin-top: 20px; padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+    <h1>🐷 ระบบบันทึกข้อมูลสุกรขุน</h1>
+
+    <label>วันที่บันทึก:</label>
+    <input type="date" id="checkDate">
+
+    <label>เบอร์หู / หมายเลขประจำตัว:</label>
+    <input type="text" id="pigID" placeholder="ตัวอย่าง: PIG-001">
+
+    <label>หมายเลขคอก:</label>
+    <input type="text" id="penNumber" placeholder="เช่น: คอกที่ 05">
+
+    <label>น้ำหนักตัว (กก.):</label>
+    <input type="number" id="pigWeight" placeholder="0.00">
+
+    <label>ปริมาณอาหารที่กิน (กก./วัน):</label>
+    <input type="number" id="feedAmount" placeholder="0.00">
+
+    <label>สถานะสุขภาพ:</label>
+    <select id="pigStatus">
+        <option value="ปกติ">ปกติ</option>
+        <option value="ป่วย / ดูอาการ">ป่วย / ดูอาการ</option>
+        <option value="ได้รับวัคซีน">ได้รับวัคซีน</option>
+        <option value="คัดออก / ส่งขาย">คัดออก / ส่งขาย</option>
+    </select>
+
+    <label>บันทึกเพิ่มเติม:</label>
+    <textarea id="pigNote" rows="3" placeholder="ระบุรายละเอียด..."></textarea>
+
+    <br>
+    <button type="button" onclick="saveData()">บันทึกข้อมูลสุกร</button>
+
+    <script>
+    function saveData() {
+
+        var date = document.getElementById('checkDate').value;
+        var id = document.getElementById('pigID').value;
+        var pen = document.getElementById('penNumber').value;
+        var weight = document.getElementById('pigWeight').value;
+        var feed = document.getElementById('feedAmount').value;
+        var status = document.getElementById('pigStatus').value;
+        var note = document.getElementById('pigNote').value;
+
+        if(!date || !id) {
+            alert("กรุณากรอกวันที่และเบอร์หูด้วยครับ");
+            return;
+        }
+
+        var url = "https://script.google.com/macros/s/AKfycbxLtbEtyKan4SZn1tGBE2_K5pg1Tb78LrlDtCTSO3HlsKmtvhIetAVKeBgpOlk0Sov4/exec"; 
+
+        var finalUrl = url + "?date=" + encodeURIComponent(date) + 
+                             "&pigID=" + encodeURIComponent(id) + 
+                             "&penNumber=" + encodeURIComponent(pen) + 
+                             "&pigWeight=" + encodeURIComponent(weight) + 
+                             "&feedAmount=" + encodeURIComponent(feed) + 
+                             "&pigStatus=" + encodeURIComponent(status) + 
+                             "&note=" + encodeURIComponent(note);
+
+        fetch(finalUrl, { method: 'POST' })
+        .then(response => {
+            alert("บันทึกข้อมูลสุกรลงระบบเรียบร้อย!");
+            document.getElementById('pigID').value = "";
+            document.getElementById('pigWeight').value = "";
+            document.getElementById('feedAmount').value = "";
+        })
+        .catch(error => alert("พังครับ: " + error));
+    }
+    </script>
+
+</body>
+</html>
