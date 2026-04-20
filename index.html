@@ -97,20 +97,19 @@ function saveData() {
                         text: 'ข้อมูลถูกส่งลง Google Sheets แล้ว',
                         icon: 'success',
                         timer: 2000,
-                        showConfirmButton: false
-                    });
-                    
+                        
                     document.getElementById('pigID').value = "";
                     document.getElementById('penNumber').value = "";
-                    document.getElementById('pigNote').value = "";
+                    document.getElementById('pigWeight').value = "";
                     document.getElementById('feedAmount').value = "";
                     document.getElementById('pigNote').value = ""; 
                 })
                 .catch(error => {
-                    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกได้ กรุณาลองใหม่', 'error');
-               
-}
-    </script>
-
+                    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกได้', 'error');
+                });
+        }
+    }); //
+} //
+</script>
 </body>
 </html>
