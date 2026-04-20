@@ -1,55 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-    <title>ระบบบันทึกข้อมูลฟาร์มสุกรขุน</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบบันทึกข้อมูลสุกร</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-        label { font-weight: bold; display: block; margin-top: 10px; }
-        input, select, textarea { width: 100%; max-width: 300px; padding: 8px; margin-top: 5px; }
-        button { margin-top: 20px; padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; margin-top: 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
         button:hover { background-color: #218838; }
     </style>
-    <script 
-        src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
-    </script>
 </head>
 <body>
 
-    <h1>🐷 ระบบบันทึกข้อมูลสุกรขุน</h1>
-
-    <label>วันที่บันทึก:</label>
+<div class="container">
+    <h2>บันทึกข้อมูลสุกร</h2>
+    <label>วันที่ตรวจ</label>
     <input type="date" id="checkDate">
 
-    <label>เบอร์หู / หมายเลขประจำตัว:</label>
-    <input type="text" id="pigID" placeholder="ตัวอย่าง: PIG-001">
+    <label>เบอร์หู/รหัสสัตว์</label>
+    <input type="text" id="pigID" placeholder="กรอกรหัสสัตว์">
 
-    <label>หมายเลขคอก:</label>
-    <input type="text" id="penNumber" placeholder="เช่น: คอกที่ 05">
+    <label>คอกที่</label>
+    <input type="number" id="penNumber" placeholder="เลขคอก">
 
-    <label>น้ำหนักตัว (กก.):</label>
-    <input type="number" id="pigWeight" placeholder="0.00">
+    <label>น้ำหนัก (กก.)</label>
+    <input type="number" id="pigWeight" placeholder="น้ำหนักปัจจุบัน">
 
-    <label>ปริมาณอาหารที่กิน (กก./วัน):</label>
-    <input type="number" id="feedAmount" placeholder="0.00">
+    <label>ปริมาณอาหารที่ให้</label>
+    <input type="number" id="feedAmount" placeholder="กิโลกรัม">
 
-    <label>สถานะสุขภาพ:</label>
+    <label>สถานะสุขภาพ</label>
     <select id="pigStatus">
         <option value="ปกติ">ปกติ</option>
-        <option value="ป่วย / ดูอาการ">ป่วย / ดูอาการ</option>
-        <option value="ได้รับวัคซีน">ได้รับวัคซีน</option>
-        <option value="คัดออก / ส่งขาย">คัดออก / ส่งขาย</option>
+        <option value="ป่วย/อ่อนแอ">ป่วย/อ่อนแอ</option>
+        <option value="รอตรวจซ้ำ">รอตรวจซ้ำ</option>
     </select>
 
-    <label>บันทึกเพิ่มเติม:</label>
-    <textarea id="pigNote" rows="3" placeholder="ระบุรายละเอียด..."></textarea>
+    <label>บันทึกเพิ่มเติม</label>
+    <textarea id="pigNote" rows="3" placeholder="ระบุอาการหรือข้อมูลอื่นๆ"></textarea>
 
-    <br>
-    <button type="button" onclick="saveData()">บันทึกข้อมูลสุกร</button>
+    <button onclick="saveData()">บันทึกข้อมูลลงระบบ</button>
+</div>
 
-    <script>
+<script>
+// ตั้งค่าวันที่ปัจจุบันให้อัตโนมัติ
+document.getElementById('checkDate').valueAsDate = new Date();
+
 function saveData() {
-
+    // 1. ดึงข้อมูลจากหน้าเว็บ
     var date = document.getElementById('checkDate').value;
     var id = document.getElementById('pigID').value;
     var pen = document.getElementById('penNumber').value;
@@ -58,11 +61,13 @@ function saveData() {
     var status = document.getElementById('pigStatus').value;
     var note = document.getElementById('pigNote').value;
 
+    // 2. ตรวจสอบข้อมูลเบื้องต้น
     if (!id) {
-        Swal.fire('กรุณากรอกข้อมูล', 'ต้องระบุเบอร์หู/รหัสสัตว์', 'warning');
+        Swal.fire('กรุณากรอกข้อมูล', 'ต้องระบุเบอร์หูสุกรก่อนบันทึก', 'warning');
         return;
     }
 
+    // 3. แสดงหน้าต่างยืนยัน
     Swal.fire({
         title: 'ยืนยันการบันทึก?',
         text: "คุณตรวจสอบข้อมูลถูกต้องแล้วใช่หรือไม่",
@@ -74,14 +79,16 @@ function saveData() {
         cancelButtonText: 'ยกเลิก'
     }).then((result) => {
         if (result.isConfirmed) {
-
+            // แสดงสถานะกำลังบันทึก
             Swal.fire({
                 title: 'กำลังบันทึก...',
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading() }
             });
 
-            var scriptUrl = "https://script.google.com/macros/s/AKfycbxnDnZ07NFFZx_D8MaUbXGWNgSkIO7a8GQD2dz4wfy3xeNUR7wftnxZMUsBX8TGs_dZ/exec"; 
+            // URL ของ Google Apps Script (ตรวจสอบให้ตรงกับของคุณ)
+            var scriptUrl = "https://script.google.com/macros/s/AKfycbxLtbEtyKan4SZn1tGBE2_K5pg1Tb78LrlDtCTSO3HlsKmtvhIEtAVKeBgpO1k0Sov4/exec";
+            
             var finalUrl = scriptUrl + "?date=" + encodeURIComponent(date) +
                            "&pigID=" + encodeURIComponent(id) +
                            "&penNumber=" + encodeURIComponent(pen) +
@@ -90,26 +97,30 @@ function saveData() {
                            "&pigStatus=" + encodeURIComponent(status) +
                            "&note=" + encodeURIComponent(note);
 
+            // 4. ส่งข้อมูล
             fetch(finalUrl)
                 .then(response => {
                     Swal.fire({
                         title: 'บันทึกสำเร็จ!',
-                        text: 'ข้อมูลถูกส่งลง Google Sheets แล้ว',
                         icon: 'success',
                         timer: 2000,
-                        
+                        showConfirmButton: false
+                    });
+                    
+                    // ล้างค่าข้อมูลในช่องกรอก
                     document.getElementById('pigID').value = "";
                     document.getElementById('penNumber').value = "";
                     document.getElementById('pigWeight').value = "";
                     document.getElementById('feedAmount').value = "";
-                    document.getElementById('pigNote').value = ""; 
+                    document.getElementById('pigNote').value = "";
                 })
                 .catch(error => {
-                    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถบันทึกได้', 'error');
+                    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบได้ กรุณาลองใหม่', 'error');
                 });
         }
-    }); //
-} //
+    });
+}
 </script>
+
 </body>
 </html>
